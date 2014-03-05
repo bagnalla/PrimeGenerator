@@ -15,6 +15,7 @@ namespace Prime_Generator
 
     public partial class Form1 : Form
     {
+        PrimeGenerator primeGenerator;
         private uint numberOfPrimes;
         private Stopwatch stopWatch = new Stopwatch();
         private Thread currentPrimeThread;
@@ -22,6 +23,7 @@ namespace Prime_Generator
         public Form1()
         {
             InitializeComponent();
+            primeGenerator = new PrimeGenerator();
         }
 
         private void btnExit_Click(object sender, EventArgs e)
@@ -106,7 +108,6 @@ namespace Prime_Generator
         private void calculatePrimes()
         {
             PerformStepDelegate performStep = new PerformStepDelegate(progressBar.PerformStep);
-            //MethodInvoker performStep = delegate { progressBar.PerformStep(); };
             AppendTextDelegate appendText = new AppendTextDelegate(txtBoxResults.AppendText);
             SetTxtBoxProgressText setTxtBoxProgressText = delegate(string s) { txtBoxProgress.Text = s; };
 
@@ -115,25 +116,25 @@ namespace Prime_Generator
             if (stepValue == 0)
                 stepValue = 1;
 
-            this.Invoke(appendText, new object[] { 2 + "\r\n" });
+            // reset the prime generator
+            primeGenerator.Reset();
 
-            if (++count != numberOfPrimes)
+            // add first prime since there will always be at least one
+            this.Invoke(appendText, new object[] { primeGenerator.NextPrime() + "\r\n" });
+
+            // add more primes until count reaches numberOfPrimes
+            while (++count != numberOfPrimes)
             {
-                for (ulong n = 3; ; n += 2)
+                // perform step on progress bar
+                if (count % stepValue == 0)
                 {
-                    if (isPrime(n))
-                    {
-                        this.Invoke(appendText, new object[] { n + "\r\n" });
-                        if (++count == numberOfPrimes)
-                            break;
-                        if (count % stepValue == 0)
-                        {
-                            this.Invoke(performStep);
-                            this.Invoke((MethodInvoker)delegate { txtBoxProgress.Text = progressBar.Value + "%"; });
-                        }
-                    }
+                    this.Invoke(performStep);
+                    this.Invoke((MethodInvoker)delegate { txtBoxProgress.Text = progressBar.Value + "%"; });
                 }
+
+                this.Invoke(appendText, new object[] { primeGenerator.NextPrime() + "\r\n" });
             }
+
 
             this.Invoke((MethodInvoker)delegate { progressBar.Value = 100; });
             this.Invoke((MethodInvoker)delegate { txtBoxProgress.Text = "100%"; });
@@ -149,17 +150,6 @@ namespace Prime_Generator
 
             CustomTimeSpan t = new CustomTimeSpan(stopWatch.ElapsedMilliseconds);
             this.Invoke(appendText, new object[] { "\r\nCompleted in " + t });
-        }
-
-        public static bool isPrime(ulong n)
-        {
-            if (n != 2 && n % 2 == 0)
-                return false;
-
-            for (ulong i = 3; i * i <= n; i += 2)
-                if (n % i == 0)
-                    return false;
-            return true;
         }
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
