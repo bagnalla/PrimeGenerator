@@ -7,27 +7,26 @@ namespace Prime_Generator
 {
     public class PrimeGenerator
     {
-        ulong currentPrime = 0;
+        public ulong CurrentPrime { get; private set; }
+
+        public PrimeGenerator() { CurrentPrime = 2; }
 
         public ulong NextPrime()
         {
-            if (currentPrime == 0)
-                return (currentPrime = 2);
-
             // if current is 2, start loop at 3
             // else start at current + 2
-            for (ulong n = (currentPrime == 2 ? 3 : currentPrime + 2); ; n += 2)
+            for (ulong n = (CurrentPrime == 2 ? 3 : CurrentPrime + 2); ; n += 2)
             {
                 if (isPrime(n))
                 {
-                    return (currentPrime = n);
+                    return (CurrentPrime = n);
                 }
             }
         }
 
         public void Reset()
         {
-            currentPrime = 0;
+            CurrentPrime = 2;
         }
 
         static bool isPrime(ulong n)

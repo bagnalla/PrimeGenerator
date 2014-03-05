@@ -120,7 +120,7 @@ namespace Prime_Generator
             primeGenerator.Reset();
 
             // add first prime since there will always be at least one
-            this.Invoke(appendText, new object[] { primeGenerator.NextPrime() + "\r\n" });
+            this.Invoke(appendText, new object[] { primeGenerator.CurrentPrime + "\r\n" });
 
             // add more primes until count reaches numberOfPrimes
             while (++count != numberOfPrimes)
@@ -133,7 +133,10 @@ namespace Prime_Generator
                 }
 
                 this.Invoke(appendText, new object[] { primeGenerator.NextPrime() + "\r\n" });
+                //primeGenerator.NextPrime();
             }
+
+            //this.Invoke(appendText, new object[] { primeGenerator.CurrentPrime + "\r\n" });
 
 
             this.Invoke((MethodInvoker)delegate { progressBar.Value = 100; });
