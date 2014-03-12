@@ -39,5 +39,28 @@ namespace Prime_Generator
                     return false;
             return true;
         }
+
+        public static IEnumerable<ulong> FirstNPrimes(ulong n)
+        {
+            if (n == 0)
+                yield break;
+
+            yield return 2;
+
+            if (n == 1)
+                yield break;
+
+            ulong count = 1;
+
+            for (ulong i = 3; ; i += 2)
+            {
+                if (isPrime(i))
+                {
+                    yield return i;
+                    if (++count == n)
+                        yield break;
+                }
+            }
+        }
     }
 }

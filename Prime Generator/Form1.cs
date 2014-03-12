@@ -157,7 +157,8 @@ namespace Prime_Generator
 
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
-            currentPrimeThread.Abort();
+            if (currentPrimeThread != null)
+                currentPrimeThread.Abort();
         }
     }
 }

@@ -35,6 +35,16 @@ namespace PrimeTest
                 primeGenerator.NextPrime();
 
             Assert.AreEqual(7919, primeGenerator.CurrentPrime);
+
+
+            primeGenerator.Reset();
+
+            foreach (ulong n in PrimeGenerator.FirstNPrimes(1000))
+            {
+                Assert.AreEqual(primeGenerator.CurrentPrime, n);
+                primeGenerator.NextPrime();
+            }
+
         }
     }
 }
