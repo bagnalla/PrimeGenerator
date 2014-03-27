@@ -8,6 +8,7 @@ namespace Prime_Generator
     public class PrimeGenerator
     {
         public ulong CurrentPrime { get; private set; }
+        private readonly List<ulong> _primes = new List<ulong>(); 
 
         public PrimeGenerator() { CurrentPrime = 2; }
 
@@ -15,10 +16,12 @@ namespace Prime_Generator
         {
             // if current is 2, start loop at 3
             // else start at current + 2
-            for (ulong n = (CurrentPrime == 2 ? 3 : CurrentPrime + 2); ; n += 2)
+            for (var n = (CurrentPrime == 2 ? 3 : CurrentPrime + 2); ; n += 2)
             {
-                if (isPrime(n))
+                if (IsPrime(n, _primes))
+                //if (IsPrime(n))
                 {
+                    _primes.Add(n);
                     return (CurrentPrime = n);
                 }
             }
@@ -27,9 +30,16 @@ namespace Prime_Generator
         public void Reset()
         {
             CurrentPrime = 2;
+            _primes.Clear();
+            _primes.Add(2);
         }
 
-        static bool isPrime(ulong n)
+        public void SetPrimeListCapacity(int n)
+        {
+            _primes.Capacity = n;
+        }
+
+        static bool IsPrime(ulong n)
         {
             if (n != 2 && n % 2 == 0)
                 return false;
@@ -37,6 +47,22 @@ namespace Prime_Generator
             for (ulong i = 3; i * i <= n; i += 2)
                 if (n % i == 0)
                     return false;
+            return true;
+        }
+
+        private static bool IsPrime(ulong n, List<ulong> primes)
+        {
+            //if (n != 2 && n % 2 == 0)
+            //    return false;
+
+            for (var i = 0; primes[i] * primes[i] <= n; i++)
+            {
+                if (n%primes[i] == 0)
+                    return false;
+            }
+
+            //return primes.TakeWhile(t => t * t <= n).All(t => n % t != 0);
+
             return true;
         }
 
@@ -54,12 +80,12 @@ namespace Prime_Generator
 
             for (ulong i = 3; ; i += 2)
             {
-                if (isPrime(i))
-                {
-                    yield return i;
-                    if (++count == n)
-                        yield break;
-                }
+                if (!IsPrime(i))
+                    continue;
+
+                yield return i;
+                if (++count == n)
+                    yield break;
             }
         }
     }

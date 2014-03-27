@@ -13,7 +13,7 @@ namespace PrimeTest
         [Test]
         public void GeneratePrimes()
         {
-            PrimeGenerator primeGenerator = new PrimeGenerator();
+            var primeGenerator = new PrimeGenerator();
 
             Assert.AreEqual(2, primeGenerator.CurrentPrime);
             Assert.AreEqual(3, primeGenerator.NextPrime());
@@ -31,7 +31,7 @@ namespace PrimeTest
 
             primeGenerator.Reset();
 
-            for (int i = 0; i < 999; i++)
+            for (var i = 0; i < 999; i++)
                 primeGenerator.NextPrime();
 
             Assert.AreEqual(7919, primeGenerator.CurrentPrime);
@@ -39,12 +39,18 @@ namespace PrimeTest
 
             primeGenerator.Reset();
 
-            foreach (ulong n in PrimeGenerator.FirstNPrimes(1000))
+            foreach (var n in PrimeGenerator.FirstNPrimes(1000))
             {
                 Assert.AreEqual(primeGenerator.CurrentPrime, n);
                 primeGenerator.NextPrime();
             }
 
+            //primeGenerator.Reset();
+            //for (var i = 0; i < 999999; i++)
+            //    primeGenerator.NextPrime();
+
+            //Assert.AreEqual(primeGenerator.CurrentPrime, PrimeGenerator.FirstNPrimes(1000000).ElementAt(999999));
+            //Assert.AreEqual(15485863, primeGenerator.CurrentPrime);
         }
     }
 }
